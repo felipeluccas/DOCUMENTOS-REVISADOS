@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Enviar Questões para Análise por IA</title>
+</head>
+<body style="font-family: sans-serif; padding: 2em;">
+    <h2>Upload de Arquivo .docx para Análise com IA</h2>
+    <p>Selecione um arquivo com questões de concurso em formato .docx e envie para o fluxo de IA no n8n.</p>
+
+    <form id="uploadForm" enctype="multipart/form-data" method="POST">
+        <label for="file">Arquivo .docx:</label><br>
+        <input type="file" name="data" accept=".docx" required><br><br>
+
+        <input type="submit" value="Enviar para Análise">
+    </form>
+
+    <hr>
+    <h3>Resultado da IA:</h3>
+    <pre id="resultado" style="background: #f5f5f5; padding: 1em; white-space: pre-wrap;"></pre>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const resultado = document.getElementById('resultado');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const webhookURL = "https://felipeluccas.app.n8n.cloud/webhook/analisar-questoes";
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const text = await response.text();
+                resultado.textContent = text;
+            } catch (err) {
+                resultado.textContent = 'Erro ao enviar: ' + err;
+            }
+        });
+    </script>
+</body>
+</html>
